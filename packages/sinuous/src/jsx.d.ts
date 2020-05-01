@@ -6,6 +6,10 @@ type Defaultize<Props, Defaults> =
         Pick<Props, Exclude<keyof Props, keyof Defaults>>
     : never;
 
+import { Observable } from '../observable/src';
+
+type AllowObservable<Props> = { [K in keyof Props]: Props[K] | Observable<Props[K]> }
+
 export namespace JSXInternal {
   type LibraryManagedAttributes<Component, Props> = Component extends {
     defaultProps: infer Defaults;
@@ -29,7 +33,10 @@ export namespace JSXInternal {
     children: any;
   }
 
-  interface SVGAttributes<Target extends EventTarget = SVGElement>
+  type SVGAttributes<Target extends EventTarget = SVGElement>
+    = AllowObservable<_SVGAttributes<Target>>
+
+  interface _SVGAttributes<Target extends EventTarget = SVGElement>
     extends HTMLAttributes<Target> {
     accentHeight?: number | string;
     accumulate?: 'none' | 'sum';
@@ -583,7 +590,10 @@ export namespace JSXInternal {
     onTransitionEndCapture?: TransitionEventHandler<Target>;
   }
 
-  interface HTMLAttributes<RefType extends EventTarget = EventTarget>
+  type HTMLAttributes<RefType extends EventTarget = EventTarget>
+    = AllowObservable<_HTMLAttributes<RefType>>
+
+  interface _HTMLAttributes<RefType extends EventTarget = EventTarget>
     extends DOMAttributes<RefType> {
     // Standard HTML Attributes
     accept?: string;
